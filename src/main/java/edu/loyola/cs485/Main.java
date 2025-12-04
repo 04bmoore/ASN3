@@ -13,7 +13,7 @@ public class Main {
     static String url = ConUrl+":"+Port+"/"+Database+ "?user="+Username+"&password="+Password;
 
 
-    static void main() {
+    public static void main(String[] args) {
 
     }
 }
