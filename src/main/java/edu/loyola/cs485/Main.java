@@ -1,5 +1,6 @@
 package edu.loyola.cs485;
 
+import edu.loyola.cs485.controller.LeagueService;
 import edu.loyola.cs485.model.dao.LeagueDAO;
 import edu.loyola.cs485.model.entity.League;
 
@@ -37,20 +38,18 @@ public class Main {
             choice = scanner.nextInt();
 
             LeagueDAO leagueDB = new LeagueDAO();
+            LeagueService servicer = new LeagueService();
 
             switch (choice) {
                 case 1:
-                    League newLeague = new League();
                     System.out.println("Whats the name of the league?");
                     String leagueName = scanner.next();
-                    newLeague.setName_league(leagueName);
                     System.out.println("What country is it in?");
                     String leagueCountry = scanner.next();
-                    newLeague.setCountry(leagueCountry);
-
-
                     try {
+                        League newLeague = servicer.createLeague(leagueName, leagueCountry);
                         leagueDB.create(newLeague);
+
                     } catch (Exception e){
                         System.out.println(e);
                     }
@@ -60,7 +59,7 @@ public class Main {
                     choice = scanner.nextInt();
                     if (choice == 1){
                         try {
-                            List<League> arrLeagues = leagueDB.list();
+                            List<League> arrLeagues = servicer.getALLLeagues();
                             for (League league : arrLeagues){
                                 System.out.println(league);
                             }
@@ -107,7 +106,7 @@ public class Main {
                     System.out.println("What is the ID of the league to delete?");
                     int leagueDeleteID = scanner.nextInt();
                     try {
-                        leagueDB.delete(leagueDeleteID);
+                        servicer.deleteLeague(leagueDeleteID);
                     }catch (Exception e){
                         System.out.println(e);
                     }
@@ -122,4 +121,6 @@ public class Main {
 
 
     }
+
+
 }
