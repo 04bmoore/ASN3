@@ -1,6 +1,12 @@
 package edu.loyola.cs485;
 
+import edu.loyola.cs485.model.dao.LeagueDAO;
+import edu.loyola.cs485.model.entity.League;
+
 import java.sql.*;
+import java.util.List;
+import java.util.Scanner;
+
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
@@ -15,6 +21,105 @@ public class Main {
 
     public static void main(String[] args) {
 
-        System.out.println("test");
+
+        Scanner scanner = new Scanner(System.in);
+        int choice;
+
+        do {
+            System.out.println("\nChoose an option:");
+            System.out.println("1. Create");
+            System.out.println("2. Read");
+            System.out.println("3. Update");
+            System.out.println("4. Delete");
+            System.out.println("5. Quit");
+            System.out.print("Enter your choice: ");
+
+            choice = scanner.nextInt();
+
+            LeagueDAO leagueDB = new LeagueDAO();
+
+            switch (choice) {
+                case 1:
+                    League newLeague = new League();
+                    System.out.println("Whats the name of the league?");
+                    String leagueName = scanner.next();
+                    newLeague.setName_league(leagueName);
+                    System.out.println("What country is it in?");
+                    String leagueCountry = scanner.next();
+                    newLeague.setCountry(leagueCountry);
+
+
+                    try {
+                        leagueDB.create(newLeague);
+                    } catch (Exception e){
+                        System.out.println(e);
+                    }
+
+                case 2:
+                    System.out.println("Do you want to list the whole table or do you want to print by ID? (1 for whole table, 2 for by ID)");
+                    choice = scanner.nextInt();
+                    if (choice == 1){
+                        try {
+                            List<League> arrLeagues = leagueDB.list();
+                            for (League league : arrLeagues){
+                                System.out.println(league);
+                            }
+                        }catch (Exception e){
+                            System.out.println(e);
+                        }
+                    }
+                    else{
+                        System.out.println("What is the ID of the league to print?");
+
+                        int idLeague = scanner.nextInt();
+                        try {
+                            leagueDB.read(idLeague);
+                        } catch (Exception e) {
+                            System.out.println(e);
+                        }
+                    }
+
+                case 3:
+                    System.out.println("Whats the ID to update?");
+                    int idUpdate = scanner.nextInt();
+                    System.out.println("What do you want to update? \n" +
+                            "1 - Name of League\n" +
+                            "2 - Country of League");
+                    choice = scanner.nextInt();
+                    League tempLeague = new League();
+                    try {
+                        tempLeague = leagueDB.read(idUpdate);
+
+                        if (choice == 1) {
+                            System.out.println("New League Name:");
+                            String newName = scanner.next();
+                            tempLeague.setName_league(newName);
+                        } else{
+                            System.out.println("New League Country: ");
+                            String newCountry = scanner.next();
+                            tempLeague.setCountry(newCountry);
+                        }
+                        leagueDB.update(tempLeague);
+                    } catch (Exception e){
+                        System.out.println(e);
+                    }
+                case 4:
+                    System.out.println("What is the ID of the league to delete?");
+                    int leagueDeleteID = scanner.nextInt();
+                    try {
+                        leagueDB.delete(leagueDeleteID);
+                    }catch (Exception e){
+                        System.out.println(e);
+                    }
+                case 5:
+                    System.out.println("Exiting program...");
+                default:
+                    System.out.println("Invalid choice. Try again.");
+            }
+        } while (choice != 5);
+
+        scanner.close();
+
+
     }
 }
